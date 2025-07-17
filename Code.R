@@ -7,7 +7,7 @@ library(ggcorrplot)
 
 
 
-WC2022 = read.csv('Documents/Data Science Primer/QACDATAWC2022.csv', col.names = c('Player','Position','Squad','Age','Born','Goals','Shots','Shots on Target','Average Shot Distance','Free Kicks Made','Penalty Kicks Made','Penalty Kicks Attempted','Touches','Tackles','Tackles Won','Blocks','Interceptions','Passes Completed','Passes Attempted'))
+WC2022 = read.csv('DATASET FROM FBREF IS NO LONGER AVAILABLE FOR DOWNLOAD', col.names = c('Player','Position','Squad','Age','Born','Goals','Shots','Shots on Target','Average Shot Distance','Free Kicks Made','Penalty Kicks Made','Penalty Kicks Attempted','Touches','Tackles','Tackles Won','Blocks','Interceptions','Passes Completed','Passes Attempted'))
 
 
 WC2022$Team.Rank = with(WC2022,ifelse(Squad == 'Argentina', 1
@@ -70,7 +70,7 @@ prop.table(table(test_df$Position, test_df$cluster),margin = 1)
 
 # Cluster does not show any two positions being very similar to each other and clustered together, therefore will run each position seperately for linear regression
 
-# also say in cluster 3 there are clearly a couple of points that seem like outliers and with more time on this project would look into those and potentially try to get rid of them
+# In Cluster 3 there are clearly a couple of points that seem like outliers and with more time something to look into
 
 lm1 = lm(formula = Team.Rank ~ Goals, Subset1)
 lm2 = lm(formula = Team.Rank ~ Shots, Subset1)
@@ -99,43 +99,35 @@ install.packages("psych")
 library(psych)
 corPlot(Subset1B)
 
-# correlation plot shows that there is a some correlation between variables so likely there is multicollinearity when all variables are used in 
-# linear regression causing correlation to go away
+# Correlation plot shows that there is some correlation between variables so likely there is multicollinearity when all variables are used in linear regression causing correlation to go away
 
 str(Subset1)
 
 Subset1$Position = as.factor(Subset1$Position)
 
 linear1 = lm(formula = Goals ~ relevel(Position, ref="FW"), Subset1)
-# can justify using goals only for forward because clearly something special about being part of a forward as for the other its significant that they score less goals than forwards
+
 linear2 = lm(formula = Shots ~ relevel(Position, ref='FW'), Subset1)
-# can justify using shots only for forward because clearly something special about being part of a forward as for the other its significant that they shoot less than forwards
+
 linear3 = lm(formula = Shots.on.Target ~ relevel(Position, ref='FW'), Subset1)
-# can justify using shots on target only for forward because clearly something special about being part of a forward as for the other its significant that they shoot less than forwards
+
 
 linear4 = lm(formula = Average.Shot.Distance ~ relevel(Position, ref='FW'), Subset1)
-# can justify using average shot distance for forward
 
 linear5 = lm(formula = Tackles ~ Position, Subset1)
-# can justify using tackles won only for defense because clearly something special about being part of a defender as for the other its significant that they tackle less than defenders
 
 linear6 = lm(formula = Tackles.Won ~ Position, Subset1)
-# can justify using tackles won only for defense because clearly something special about being part of a defender as for the other its significant that they win less tackles than defenders
 
 linear7 = lm(formula = Blocks ~ Position, Subset1)
-# can justify using blocks only for defense because clearly something special about being part of a defender as for the other its significant that they win less blocks than defenders
 
 linear8 = lm(formula = Interceptions ~ Position, Subset1)
-# can justify using interceptions only for defense because clearly something special about being part of a defender as for the other its significant that they make less interceptions than defenders
+
 
 linear9= lm(formula = Passes.Completed ~ relevel(Position, ref = 'MF'), Subset1)
-# use for both MF and DF
 
 linear10 = lm(formula = Passes.Attempted ~ relevel(Position, ref = 'MF'), Subset1)
-# Use for both MF and DF
 
 linear11 = lm(formula = Touches ~ relevel(Position, ref = 'MF'), Subset1)
-# Use for both MF and DF
 
 summary(linear1)
 summary(linear2)
@@ -148,10 +140,6 @@ summary(linear8)
 summary(linear9)
 summary(linear10)
 summary(linear11)
-
-# SAY IN presentation there are soccer players that play many positions so in order to simplify 
-# the data for analysis I took each players main position which is the first position listed in the dataset
-# to make sure it was first in dataset I checked multiple random players and found their main position was the first listed
 
 Subset1_Scale1 = as.data.frame(Subset1_Scale)
 
@@ -184,117 +172,3 @@ Subset1_Scale1 %>%
 ALL_DF$BestDF = ALL_DF$Tackles + ALL_DF$Tackles.Won + ALL_DF$Blocks + ALL_DF$Interceptions + ALL_DF$Passes.Completed + ALL_DF$Passes.Attempted + ALL_DF$Touches
 
 ALL_DF %>% group_by(Players) %>% arrange(-BestDF) %>% head(5) %>% select(Players)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# cluster the data make a subset of data including everything but player, position, squad, age, born for each world cup which will tell me which are similar to see which are similar for teams, positions etc (positions is the most important)
-# add a rank for each team for both world cups
-# do a linear regression comparing rank with subset of each position and compare the stats to see which are signficicant only use signficant stats to find out who the best players are for that position
-
-
-
-# for 2022 wc 
-# argentina 
-# france
-# croatia
-# morocco
-# Netherlands
-# england
-# brazil
-# portugal 
-# Japan
-# Senegal
-# Australia
-# Switzerland
-# Spain
-# USA
-# Poland
-# South Korea
-# Germany
-# Ecuador
-# cameroon
-# uruguay
-# tunisia
-# mexico
-# belgium
-# ghana
-# saudi arabia
-# iran
-# costa rica
-# denmark
-# serbia
-# wales
-# canada
-# qatar
-
-# for 2018 wc
-# France
-# belgium
-# croatia
-# brazil
-# england
-# uruguay
-# russia
-# mexico
-# japan
-# sweden
-# portugal
-# spain
-# colombia
-# switzerland
-# iran
-# south korea
-# senegal
-# argentina
-# denmark
-# peru
-# nigeria
-# serbia
-# Morocco
-# saudi arabia
-# iceland
-# poland
-# tunisia 
-# costa rica
-# australia
-# panama
-# germany  
-# egypt
-    
-
-
-
-
-
